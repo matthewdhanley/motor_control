@@ -10,20 +10,9 @@ from sensor_msgs.msg import Joy
 
 
 motorScalar=30 #change this to adjust what magnitude the serial commands are
-linearScalar=150
-rotateScalar=150
-scoop = 0
-cancel = 0
-
-#linearTopPosition=300
-#rotationTopPosition=300
-
-#linearPos=500
-#rotationPos=500
 
 def callback(data):
-    global scoop
-    global cancel
+
     moveThatShitr=0
     moveThatShitl=0
     twist = Twist()
@@ -95,31 +84,22 @@ def callback(data):
         leftOutput = -xDir*motorScalar
         rightOutput = -leftOutput*(1-abs(thetaDir))
 
+
     robotShit=Twist()
     robotShit.linear.x=leftOutput
     robotShit.linear.y=rightOutput
-    robotShit.linear.z=scoop
-    robotShit.angular.x=cancel
     robotShit.angular.y=moveThatShitl
     robotShit.angular.z=moveThatShitr
     robotPub.publish(robotShit)
-    print leftOutput,",",rightOutput,",",linearOutput,",",rotateOutput,",",moveThatShitl,",",moveThatShitr,",",scoop
-
 
 def start():
     global robotPub
-    #global scoop
-    #scoop = 0
-    #global linearPos=-5000
-    #global rotationPos=-5000
     robotPub=rospy.Publisher('/robot/motor_control_serial',Twist,queue_size=1)
-    #macroPub = rospy.Publisher('/robot/macro_serial',Twist,queue_size=1)
     rospy.Subscriber('/cmd_vel',Twist,callback)
     rospy.init_node('motor_control')
-    print "spinning"
+    print "Motor Control Started"
     rospy.spin()
 
 
 if __name__ == "__main__":
-    print "started"
-start()
+    start()
